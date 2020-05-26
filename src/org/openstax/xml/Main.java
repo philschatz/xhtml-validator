@@ -10,7 +10,7 @@ public class Main {
 
         try {
             if (args.length == 0) {
-                throw new RuntimeException("Requires 1 argument: the path to a file to validate");
+                throw new RuntimeException("Requires 2 arguments: the path to a file to validate and which checks to run ('all-checks', 'duplicate-id', 'broken-link')");
             }
             File inputFile = new File(args[0]);
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -18,8 +18,25 @@ public class Main {
             IdValidator idValidator = new IdValidator();
             InternalLinkValidator internalValidator = new InternalLinkValidator();
 
-            saxParser.parse(inputFile, internalValidator);
-            saxParser.parse(inputFile, idValidator);
+            String whichCheck = "all-checks";
+            if (args.length > 1) {
+                whichCheck = args[1];
+            }
+
+            switch (whichCheck) {
+                case "all-checks":
+                    saxParser.parse(inputFile, internalValidator);
+                    saxParser.parse(inputFile, idValidator);
+                    break;
+                case "duplicate-id":
+                    saxParser.parse(inputFile, idValidator);
+                    break;
+                case "broken-link":
+                    saxParser.parse(inputFile, internalValidator);
+                    break;
+                default:
+                    throw new RuntimeException("Invalid check name. Valid names are: 'all-checks', 'duplicate-id', 'broken-link'");
+            }
         } catch (Throwable e) {
             System.err.println(e.getMessage());
             System.exit(1);

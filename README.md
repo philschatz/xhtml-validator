@@ -17,3 +17,9 @@ docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-d
 docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-no-link-target.xhtml
 docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/pass.xhtml
 ```
+
+An additional optional argument specifies which test to run:
+
+- none: all the validation checks
+- _"duplicate-id"_: check for duplicate id attributes
+- _"broken-link"_: check for internal broken links
