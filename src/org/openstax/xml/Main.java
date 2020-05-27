@@ -15,8 +15,9 @@ public class Main {
             File inputFile = new File(args[0]);
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
-            IdValidator idValidator = new IdValidator();
-            InternalLinkValidator internalValidator = new InternalLinkValidator();
+            XMLVisitor visitor = new XMLVisitor();
+
+            saxParser.parse(inputFile, visitor);
 
             String whichCheck = "all-checks";
             if (args.length > 1) {
@@ -25,14 +26,18 @@ public class Main {
 
             switch (whichCheck) {
                 case "all-checks":
-                    saxParser.parse(inputFile, internalValidator);
-                    saxParser.parse(inputFile, idValidator);
+                    visitor.checkLinksToDuplicateIds();
+                    visitor.checkLinks();
+                    visitor.checkDuplicateIds();
                     break;
                 case "duplicate-id":
-                    saxParser.parse(inputFile, idValidator);
+                    visitor.checkDuplicateIds();
                     break;
                 case "broken-link":
-                    saxParser.parse(inputFile, internalValidator);
+                    visitor.checkLinks();
+                    break;
+                case "link-to-duplicate-id":
+                    visitor.checkLinksToDuplicateIds();
                     break;
                 default:
                     throw new RuntimeException("Invalid check name. Valid names are: 'all-checks', 'duplicate-id', 'broken-link'");

@@ -16,6 +16,8 @@ Mount a volume and specify the path to the XHTML file as the argument.
 docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-duplicate.xhtml
 docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-no-link-target.xhtml
 docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/pass.xhtml
+
+docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-link-to-duplicate.xhtml link-to-duplicate-id
 ```
 
 An additional optional argument specifies which test to run:
@@ -23,3 +25,4 @@ An additional optional argument specifies which test to run:
 - none: all the validation checks
 - _"duplicate-id"_: check for duplicate id attributes
 - _"broken-link"_: check for internal broken links
+- _"link-to-duplicate-id"_: duplicate ids are ok (not strictly valid XHTML) but links to duplicates **is** an error
