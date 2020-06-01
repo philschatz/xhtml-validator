@@ -36,9 +36,15 @@ public class XMLVisitor extends DefaultHandler {
             }
         }
 
-        if (href != null && href.charAt(0) == '#') {
-            String hrefId = href.substring(1);
-            linksToCheck.add(hrefId);
+        if (href != null) {
+            if (href.length() > 1) {
+                if (href.charAt(0) == '#') {
+                    String hrefId = href.substring(1);
+                    linksToCheck.add(hrefId);
+                }
+            } else {
+                System.err.println("Found a link with an empty href");
+            }
         }
 
     }
