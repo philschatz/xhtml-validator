@@ -1,0 +1,36 @@
+version: 2.0
+jobs:
+  unit-tests:
+    docker:
+      - image: circleci/openjdk:14-jdk-buster
+
+    steps:
+      - checkout
+
+      - run:
+          name: Run unit tests
+          command: |
+            ./gradlew test
+
+      - run:
+          name: Generate code coverage results
+          command: |
+            ./gradlew jacocoTestReport
+
+      - run:
+          name: Upload code coverage results
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+
+      - store_artifacts:
+          path: build/reports
+          destination: test-reports
+
+      - store_test_results:
+          path: build/test-results
+
+workflows:
+  version: 2
+  run-tests:
+    jobs:
+      - unit-tests

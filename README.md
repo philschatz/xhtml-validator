@@ -23,11 +23,11 @@ Mount a volume and specify the path to the XHTML file as the argument.
 
 ```bash
 # Clone this repo and run:
-docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-duplicate.xhtml
-docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-no-link-target.xhtml
-docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/pass.xhtml
+docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/resources/fail-duplicate.xhtml
+docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/resources/fail-no-link-target.xhtml
+docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/resources/pass.xhtml
 
-docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/fail-link-to-duplicate.xhtml link-to-duplicate-id
+docker run --volume $(pwd):/data --rm -it $(docker build -q .) /data/test/resources/fail-link-to-duplicate-id.xhtml link-to-duplicate-id
 ```
 
 An additional optional argument specifies which test to run:
@@ -36,3 +36,25 @@ An additional optional argument specifies which test to run:
 - _"duplicate-id"_: check for duplicate id attributes
 - _"broken-link"_: check for internal broken links
 - _"link-to-duplicate-id"_: duplicate ids are ok (not strictly valid XHTML) but links to duplicates **is** an error
+
+# Build and run tests
+
+A full build (including generation of `.jar` and running unit tests) can be invoked using the `build` gradle task:
+
+```bash
+./gradlew build
+```
+
+Build artifacts will be generated in `./build`, and `xhtml-validator.jar` can be found in `./build/libs/`.
+
+The unit tests can be run using the `test` task:
+
+```bash
+./gradlew test
+```
+
+The environment can be cleaned up using the `clean` task:
+
+```bash
+./gradlew clean
+```
