@@ -1,4 +1,14 @@
-# xhtml5-validator
+# About xhtml5-validator
+
+This repository provides several validation checks on both the structure of the XHTML files and the data inside the files.
+This is more than just a schema validator.
+
+It checks the correctness of values in the XHTML file: e.g. `id="..."` attributes are unique, internal links actually point to somewhere in the document.
+
+It [will also](https://github.com/openstax/xhtml-validate) check that the structure of the XHTML is correct. Self-closing tags are a problem for **HTML** parsers so we aim to generate XHTML that can also be parsed by HTML parsers. Self-closing spans, links, headings are particular culprits.
+
+
+## Details
 
 This performs the following validations:
 
