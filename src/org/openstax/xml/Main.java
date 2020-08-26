@@ -1,6 +1,7 @@
 package org.openstax.xml;
 
 import java.io.File;
+import java.util.Arrays;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -18,28 +19,28 @@ public class Main {
 
         saxParser.parse(inputFile, visitor);
 
-        String whichCheck = "all-checks";
-        if (args.length > 1) {
-            whichCheck = args[1];
-        }
-
-        switch (whichCheck) {
-            case "all-checks":
-                visitor.checkLinksToDuplicateIds();
-                visitor.checkLinks();
-                visitor.checkDuplicateIds();
-                break;
-            case "duplicate-id":
-                visitor.checkDuplicateIds();
-                break;
-            case "broken-link":
-                visitor.checkLinks();
-                break;
-            case "link-to-duplicate-id":
-                visitor.checkLinksToDuplicateIds();
-                break;
-            default:
-                throw new RuntimeException("Invalid check name. Valid names are: 'all-checks', 'duplicate-id', 'broken-link'");
+        String[] availableChecks = {"all", "duplicate-id", "broken-link", "link-to-duplicate-id"};
+        String[] desiredChecks = args.length == 1 ? new String[]{"all"} : Arrays.copyOfRange(args, 1, args.length);
+        for (String check: desiredChecks) {
+            System.err.println(String.format("Running %s", check));
+            switch (check) {
+                case "all":
+                    visitor.checkLinksToDuplicateIds();
+                    visitor.checkLinks();
+                    visitor.checkDuplicateIds();
+                    break;
+                case "duplicate-id":
+                    visitor.checkDuplicateIds();
+                    break;
+                case "broken-link":
+                    visitor.checkLinks();
+                    break;
+                case "link-to-duplicate-id":
+                    visitor.checkLinksToDuplicateIds();
+                    break;
+                default:
+                    throw new RuntimeException(String.format("Invalid check name: %s. Valid names are: %s", check, Arrays.toString(availableChecks)));
+            }
         }
     }   
 }
