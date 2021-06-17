@@ -21,26 +21,32 @@ public class Main {
 
         String[] availableChecks = {"all", "duplicate-id", "broken-link", "link-to-duplicate-id"};
         String[] desiredChecks = args.length == 1 ? new String[]{"all"} : Arrays.copyOfRange(args, 1, args.length);
+        boolean errorsFound = false;
+
         for (String check: desiredChecks) {
             System.err.println(String.format("Running %s", check));
             switch (check) {
                 case "all":
-                    visitor.checkLinksToDuplicateIds();
-                    visitor.checkLinks();
-                    visitor.checkDuplicateIds();
+                    errorsFound |= visitor.linksToDuplicateIds();
+                    errorsFound |= visitor.brokenLinks();
+                    errorsFound |= visitor.duplicateIds();
                     break;
                 case "duplicate-id":
-                    visitor.checkDuplicateIds();
+                    errorsFound |= visitor.duplicateIds();
                     break;
                 case "broken-link":
-                    visitor.checkLinks();
+                    errorsFound |= visitor.brokenLinks();
                     break;
                 case "link-to-duplicate-id":
-                    visitor.checkLinksToDuplicateIds();
+                    errorsFound |= visitor.linksToDuplicateIds();
                     break;
                 default:
                     throw new RuntimeException(String.format("Invalid check name: %s. Valid names are: %s", check, Arrays.toString(availableChecks)));
             }
         }
-    }   
+
+        if (errorsFound) {
+            throw new RuntimeException(String.format("%s failed validation", inputFile));
+        }
+    }
 }

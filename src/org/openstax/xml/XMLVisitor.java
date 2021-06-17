@@ -17,7 +17,7 @@ public class XMLVisitor extends DefaultHandler {
     Set<String> linksToCheck = new HashSet<String>();
 
     @Override
-    public void startElement(String uri, 
+    public void startElement(String uri,
     String localName, String qName, Attributes attributes) throws SAXException {
 
         String id = attributes.getValue("id");
@@ -49,7 +49,7 @@ public class XMLVisitor extends DefaultHandler {
 
     }
 
-    public void checkLinks() {
+    public boolean brokenLinks() {
         int total = 0;
         for (String s : linksToCheck) {
             if (!ids.contains(s)) {
@@ -58,23 +58,26 @@ public class XMLVisitor extends DefaultHandler {
             }
         }
         if (total != 0) {
-            throw new RuntimeException(String.format("Links that point to nowhere: %d", total));
+            System.err.println(String.format("Links that point to nowhere: %d", total));
+            return true;
         }
-
+        return false;
     }
 
-    public void checkDuplicateIds() {
+    public boolean duplicateIds() {
         int total = 0;
         for (Entry<String, Integer> d : duplicates.entrySet()) {
             total += d.getValue();
             System.err.println(String.format("Found %d duplicate(s) with id='%s'", d.getValue(), d.getKey()));
         }
         if (!duplicates.isEmpty()) {
-            throw new RuntimeException(String.format("Number of duplicate-id elements: %d", total));
+            System.err.println(String.format("Number of duplicate-id elements: %d", total));
+            return true;
         }
+        return false;
     }
 
-    public void checkLinksToDuplicateIds() {
+    public boolean linksToDuplicateIds() {
         boolean found = false;
         for (String s : linksToCheck) {
             if (duplicates.containsKey(s)) {
@@ -83,8 +86,10 @@ public class XMLVisitor extends DefaultHandler {
             }
         }
         if (found) {
-            throw new RuntimeException("Found at least one link that points to multiple elements that contain the same id (a duplicate id breaks a book in this case");
+            System.err.println("Found at least one link that points to multiple elements that contain the same id (a duplicate id breaks a book in this case");
+            return true;
         }
+        return false;
     }
 
 }
