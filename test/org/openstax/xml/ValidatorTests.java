@@ -27,45 +27,45 @@ class ValidatorTests {
     void validatesSimpleFile() {
         InputStream inputFileStream = getClass().getClassLoader().getResourceAsStream("pass-simple.xhtml");
         XMLVisitor visitor = parseFile(inputFileStream);
-        assertDoesNotThrow(() -> visitor.checkLinks());
-        assertDoesNotThrow(() -> visitor.checkDuplicateIds());
-        assertDoesNotThrow(() -> visitor.checkLinksToDuplicateIds());
+        assertFalse(visitor.brokenLinks());
+        assertFalse(visitor.duplicateIds());
+        assertFalse(visitor.linksToDuplicateIds());
     }
 
     @Test
     void validatesPassingFile() {
         InputStream inputFileStream = getClass().getClassLoader().getResourceAsStream("pass.xhtml");
         XMLVisitor visitor = parseFile(inputFileStream);
-        assertDoesNotThrow(() -> visitor.checkLinks());
-        assertDoesNotThrow(() -> visitor.checkDuplicateIds());
-        assertDoesNotThrow(() -> visitor.checkLinksToDuplicateIds());
+        assertFalse(visitor.brokenLinks());
+        assertFalse(visitor.duplicateIds());
+        assertFalse(visitor.linksToDuplicateIds());
     }
 
     @Test
     void detectsDuplicateIds() {
         InputStream inputFileStream = getClass().getClassLoader().getResourceAsStream("fail-duplicate.xhtml");
         XMLVisitor visitor = parseFile(inputFileStream);
-        assertDoesNotThrow(() -> visitor.checkLinks());
-        assertThrows(RuntimeException.class, () -> visitor.checkDuplicateIds());
-        assertDoesNotThrow(() -> visitor.checkLinksToDuplicateIds());
+        assertFalse(visitor.brokenLinks());
+        assertTrue(visitor.duplicateIds());
+        assertFalse(visitor.linksToDuplicateIds());
     }
 
     @Test
     void detectsLinksToDuplicateIds() {
         InputStream inputFileStream = getClass().getClassLoader().getResourceAsStream("fail-link-to-duplicate-id.xhtml");
         XMLVisitor visitor = parseFile(inputFileStream);
-        assertDoesNotThrow(() -> visitor.checkLinks());
-        assertThrows(RuntimeException.class, () -> visitor.checkDuplicateIds());
-        assertThrows(RuntimeException.class, () -> visitor.checkLinksToDuplicateIds());
+        assertFalse(visitor.brokenLinks());
+        assertTrue(visitor.duplicateIds());
+        assertTrue(visitor.linksToDuplicateIds());
     }
 
     @Test
     void detectsLinksWithoutTargets() {
         InputStream inputFileStream = getClass().getClassLoader().getResourceAsStream("fail-no-link-target.xhtml");
         XMLVisitor visitor = parseFile(inputFileStream);
-        assertThrows(RuntimeException.class, () -> visitor.checkLinks());
-        assertDoesNotThrow(() -> visitor.checkDuplicateIds());
-        assertDoesNotThrow(() -> visitor.checkLinksToDuplicateIds());
+        assertTrue(visitor.brokenLinks());
+        assertFalse(visitor.duplicateIds());
+        assertFalse(visitor.linksToDuplicateIds());
     }
 
 }
