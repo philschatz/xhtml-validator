@@ -4,6 +4,6 @@ WORKDIR /usr/src/xhtml-validator
 RUN ./gradlew jar
 
 
-FROM validator/validator:20.3.16
+FROM ghcr.io/validator/validator:21.7.10
 COPY --from=JAVA_BUILD /usr/src/xhtml-validator/build/libs/xhtml-validator.jar /.
 ENTRYPOINT ["java", "-cp", "xhtml-validator.jar", "org.openstax.xml.Main"]
